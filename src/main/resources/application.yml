@@ -1,0 +1,49 @@
+spring:
+  profiles:
+    active: ${ENV:local}
+  application:
+    name: kafka-smaple
+    basePath:
+  output:
+    ansi:
+      enabled: always
+
+  kafka:
+    properties:
+      security.protocol: SASL_SSL
+      ssl.truststore.type: JKS
+      ssl.truststore.location: './src/.../file_path'
+      ssl.truststore.password: 'password'
+      sasl.mechanism: GSSAPI
+      sasl.kerberos.service.name: kafka
+    streams:
+      properties:
+        auto.offset.reset: latest
+        commit.interval.ms: 100
+        num.stream.threads: 5
+        session.timeout.ms: 120000
+        heartbeat.interval.ms: 30000
+        max.poll.interval.ms: 120000
+        max.poll.records: 250
+        default.deserialization.exception.handler: org.apache.kafka.stream.errors.LogAndContinueExceptionHandler
+        default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+        value.serializer: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerializer
+      properties:
+        auto.register.schemas: true
+    consumer:
+      fetch-min-size: 50000000
+      fetch-max-wait: 1s
+      max-poll-records: 500
+      mas-poll-interval-ms: 30000
+      auto-offset-reset: latest
+
+kafka.business-event:
+  managed-servicing-order-request:
+    topic: BIAN.ManagedServicingOrder.Request
+    enable: true
+    supported-categories: FixedRateLockRequestStatus
+    supported-event-types: FRL received, FRL completed
